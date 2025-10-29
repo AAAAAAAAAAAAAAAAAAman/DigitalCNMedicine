@@ -1,8 +1,6 @@
-# 忽略静态资源目录的语言统计
-static/* linguist-vendored
-assets/* linguist-vendored
-node_modules/* linguist-vendored
-
-# 或者忽略特定类型文件
-*.min.js linguist-vendored
-*.min.css linguist-vendored
+# 告诉 GitHub：这些是第三方库，不要计入语言统计
+static/vendor/** linguist-vendored
+static/css/bootstrap/** linguist-vendored
+static/js/** linguist-vendored
+static/scss/** linguist-vendored
+static/fonts/** linguist-vendored
