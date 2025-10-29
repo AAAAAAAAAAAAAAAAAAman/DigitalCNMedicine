@@ -1,0 +1,190 @@
+<!doctype html>
+{% load static %}
+<html lang="en">
+
+<head>
+    <title>数智中医-图谱检索</title>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+
+    <link rel="stylesheet" href="/static/fonts/icomoon/style.css">
+
+    <link rel="stylesheet" href="/static/css/bootstrap.min.css">
+    <link rel="stylesheet" href="/static/css/jquery.fancybox.min.css">
+    <link rel="stylesheet" href="/static/css/owl.carousel.min.css">
+    <link rel="stylesheet" href="/static/css/owl.theme.default.min.css">
+    <link rel="stylesheet" href="/static/fonts/flaticon/font/flaticon.css">
+    <link rel="stylesheet" href="/static/css/aos.css">
+
+    <!-- MAIN CSS -->
+    <link rel="stylesheet" href="/static/css/style.css">
+    <script type="text/javascript" src="{% static 'js/jquery-3.5.1.min.js' %}"></script>
+    <script type="text/javascript" src="{% static 'js/echarts.min.js' %}"></script>
+
+    {#    图谱core js#}
+
+</head>
+
+<body>
+
+
+
+
+
+
+
+
+
+
+
+                    <div align="center"><h1>{{ question }}<br>&nbsp;</h1></div>
+
+
+                                                        {% if neonum != 0 %}
+                                            <div id="chart-container" style="width:100%;height:800px" class="col-12"></div>
+                                        {% else %}
+                                            <p style="font-size: 18px;color: #78261f">知识图谱中没有查询到相关数据</p>
+                                        {% endif %}
+
+
+{#                    <div id="chart-container2" style="width:1500px;height:800px" class="col-12"></div>#}
+
+
+
+
+
+<script src="/static/js/jquery-3.3.1.min.js"></script>
+<script src="/static/js/popper.min.js"></script>
+<script src="/static/js/bootstrap.min.js"></script>
+<script src="/static/js/owl.carousel.min.js"></script>
+<script src="/static/js/jquery.sticky.js"></script>
+<script src="/static/js/jquery.waypoints.min.js"></script>
+<script src="/static/js/jquery.animateNumber.min.js"></script>
+<script src="/static/js/jquery.fancybox.min.js"></script>
+<script src="/static/js/jquery.easing.1.3.js"></script>
+<script src="/static/js/aos.js"></script>
+
+<script src="/static/js/main.js"></script>
+
+<script>
+
+    var myChart1 = echarts.init(document.getElementById('chart-container'));
+
+
+    option1 = {
+    // 图的标题
+    title: {
+        text: '中医知识图谱查询结果展示'
+    },
+    // 提示框的配置
+    tooltip: {
+        formatter: function (x) {
+            return x.data.des;
+        }
+    },
+    // 工具箱
+    toolbox: {
+        // 显示工具箱
+        show: true,
+        feature: {
+            mark: {
+                show: true
+            },
+            // 还原
+            restore: {
+                show: true
+            },
+            // 保存为图片
+            saveAsImage: {
+                show: true
+            }
+        }
+    },
+
+    series: [{
+        type: 'graph', // 类型:关系图
+        layout: 'force', // 图的布局，类型为力导图
+        symbolSize: 15, // 调整节点的大小
+        roam: true, // 是否开启鼠标缩放和平移漫游
+        edgeSymbol: ['circle', 'arrow'],
+        edgeSymbolSize: [2, 10],
+        edgeLabel: {
+            normal: {
+                show: true,
+                formatter: function (x) {
+                    return x.data.name;
+                },
+                textStyle: {
+                    fontSize: 10
+                }
+            }
+        },
+        force: { // 力引导图基本配置
+            repulsion: 2000, // 节点之间的斥力因子
+            gravity: 0.03, // 节点受到的向中心的引力因子
+            edgeLength: [10, 50], // 边的两个节点之间的距离
+            layoutAnimation: true, // 是否显示布局的迭代动画
+            friction: 0.1 // 摩擦系数，控制节点运动速度衰减
+        },
+        draggable: true,
+        lineStyle: {
+            normal: {
+                width: 2,
+                color: '#4b565b',
+            }
+        },
+        label: {
+            normal: {
+                show: true,
+                textStyle: {}
+            }
+        },
+
+        data: [
+                {% for item in kg_data.0 %}
+                    {
+                        name: '{{ item.name }}',
+                        des: {{ item.des }},
+                        symbolSize: {{ item.symbolSize }},
+
+                        url: "{{ item.url }}",
+             itemStyle: {
+                color: ['#c990c0', '#da7194', '#4c8eda', '#57c7e3', '#569480', '#ffc454'][{{ item.category }}]
+            }
+                    },
+                {% endfor %}
+            ],
+        links: [
+            {% for temp in kg_data.1 %}
+                {
+                    source: '{{ temp.source }}',
+                    target: '{{ temp.target }}',
+                    name: '{{ temp.name }}',
+                    des: ''
+                },
+            {% endfor %}
+        ] // 定义关系
+    }]
+};
+
+    myChart1.setOption(option1);
+    myChart1.on('click', function (params) {
+        var clickedDataUrl = params.data.url;
+        console.log('被点击了')
+        $.ajax({
+            url: clickedDataUrl,  // 使用被点击数据点的 URL
+            type: 'GET',
+            success: function (response) {
+            var iframeElement = document.getElementById('page-viewer');
+            iframeElement.src = clickedDataUrl; // 设置 iframe 的 src 属性为目标 URL
+            },
+            error: function (xhr, status, error) {
+                console.log('请求失败: ' + error);
+            }
+        });
+    });
+
+</script>
+</body>
+
+</html>

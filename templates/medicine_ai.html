@@ -1,0 +1,639 @@
+{% load static %}
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>QA 页面</title>
+    <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+     <script src="https://cdn.jsdelivr.net/npm/marked/marked.min.js"></script>
+    <link rel="stylesheet" href="{% static 'css/bootstrap.css' %}">
+     <link rel="stylesheet" href="/static/fonts/icomoon/style.css">
+
+    <link rel="stylesheet" href="/static/css/bootstrap.min.css">
+    <link rel="stylesheet" href="/static/css/jquery.fancybox.min.css">
+    <link rel="stylesheet" href="/static/css/owl.carousel.min.css">
+    <link rel="stylesheet" href="/static/css/owl.theme.default.min.css">
+    <link rel="stylesheet" href="/static/fonts/flaticon/font/flaticon.css">
+    <link rel="stylesheet" href="/static/css/aos.css">
+
+    <!-- MAIN CSS -->
+    <link rel="stylesheet" href="/static/css/style.css">
+
+    <!-- Custom fonts for this template-->
+    <link href="/static/vendor/fontawesome-free/css/all.min.css" rel="stylesheet" type="text/css">
+{#    <link#}
+{#            href="https://fonts.googleapis.com/css?family=Nunito:200,200i,300,300i,400,400i,600,600i,700,700i,800,800i,900,900i"#}
+{#            rel="stylesheet">#}
+
+    <!-- Custom styles for this template-->
+    <link href="/static/css/sb-admin-2.min.css" rel="stylesheet">
+    <script src="{% static 'js/bootstrap.js' %}"></script>
+    <script src="{% static 'js/echarts.js' %}"></script>
+    <style>
+        .btn {
+            padding: 6px 24px;
+            background-color: #007BFF;
+            color: white;
+            font-size: 18px;
+            border: 2px solid #007BFF;
+            border-radius: 8px;
+            font-weight: bold;
+            text-transform: uppercase;
+            cursor: pointer;
+            transition: background-color 0.3s ease, transform 0.2s ease, box-shadow 0.3s ease;
+        }
+
+        .btn:hover {
+            background-color: #0056b3;
+            transform: scale(1.1);
+            color: white;
+        }
+
+        .btn:active {
+            box-shadow: 0 5px 15px rgba(0, 0, 0, 0.3);
+        }
+
+        /* 为整个问题列表提供一些间距 */
+        .hot-questions {
+            margin: 20px 0;
+        }
+
+        /* 设置每个问题的样式 */
+        .hot-question {
+            display: inline-block; /* 确保每个问题在独立的行上 */
+            background-color: white; /* 白色背景 */
+            padding: 10px 15px; /* 增加内边距，使得内容显得更大 */
+            margin-bottom: 15px; /* 增加问题之间的间距 */
+            border-radius: 5px; /* 使背景有圆角 */
+            box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1); /* 增加轻微的阴影效果 */
+            font-size: 16px; /* 增加文字的大小 */
+            color: #333; /* 设置文字颜色 */
+            cursor: pointer; /* 鼠标指针变成点击手型 */
+            transition: all 0.3s ease; /* 添加平滑的过渡效果 */
+        }
+
+        /* 鼠标悬停时增加背景颜色和阴影 */
+        .hot-question:hover {
+            background-color: #f1f1f1; /* 悬停时改变背景色 */
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1); /* 悬停时增加阴影效果 */
+        }
+
+        /* 可选: 点击时增加一个轻微的缩放效果 */
+        .hot-question:active {
+            transform: scale(0.98); /* 点击时轻微缩放 */
+        }
+
+        .answer {
+            display: inline-block; /* 确保背景仅覆盖文字 */
+            text-align: left; /* 文本靠左对齐 */
+            background-color: #fdfdfe; /* 背景色 */
+            padding: 5px 10px; /* 上下左右有适当内边距 */
+            border-radius: 5px; /* 圆角效果 */
+            box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1); /* 轻微的阴影效果 */
+            margin: 5px 50px 0 30px; /* 上 0px，右 30px，下 0px，左 15px */
+            font-size: 18px; /* 减小字体大小 */
+            color: black;
+        line-height: 1.3; /* 调整行高，提升可读性 */
+        }
+
+        .ask {
+            float: right; /* 将元素浮动到右边 */
+            display: inline-block; /* 确保背景仅覆盖文字 */
+            text-align: right; /* 文本靠右侧对齐 */
+            background-color: #006cfc;
+            color: white;
+            padding: 10px; /* 添加内边距 */
+            border-radius: 5px; /* 圆角效果 */
+            box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1); /* 轻微的阴影效果 */
+            margin: 0 0 0 0; /* 上 0px，右 30px，下 0px，左 15px */
+        }
+
+
+        .answer-label {
+            color: #007bff; /* 设置你想要的字体颜色，例如蓝色 */
+        }
+
+        .answer-area-container {
+            height: 100vh; /* 占据视口高度的90% */
+            background-color: #f6f8fb;
+            padding: 20px; /* 添加内边距 */
+
+        }
+
+        .fixed-form-container {
+            position: fixed;
+            bottom: 15px; /* 固定在页面底部 */
+            left: 40px; /* 从左边开始 */
+            width: calc(72%);
+            padding: 10px;
+            {#box-shadow: 0 -1px 5px rgba(0, 0, 0, 0.1); /* 阴影增加层次感 */#}
+            z-index: 1000; /* 确保表单在其他内容之上 */
+            display: flex;
+            justify-content: center; /* 居中对齐 */
+        }
+
+        .input-group {
+            display: flex; /* 让输入框和按钮并排显示 */
+            width: 100%;
+            max-width: 1000px; /* 限制表单的最大宽度 */
+        }
+
+        .input {
+            flex-grow: 1; /* 输入框占据剩余空间 */
+            padding: 12px;
+            font-size: 16px;
+            border: 2px solid #ddd; /* 添加边框 */
+            border-radius: 20px; /* 圆角 */
+            margin-right: 10px; /* 给输入框和按钮之间留些空隙 */
+            outline: none;
+            transition: border-color 0.3s, box-shadow 0.3s; /* 添加过渡效果 */
+        }
+
+        .input:focus {
+            border-color: #007bff; /* 聚焦时改变边框颜色 */
+            box-shadow: 0 0 5px rgba(0, 123, 255, 0.5); /* 聚焦时添加阴影 */
+        }
+
+        .submit-btn {
+            padding: 12px 20px;
+            font-size: 16px;
+            background-color: #007bff; /* 蓝色背景 */
+            color: white;
+            border: none;
+            border-radius: 20px; /* 圆角按钮 */
+            cursor: pointer;
+            transition: background-color 0.3s, transform 0.2s; /* 按钮过渡效果 */
+        }
+
+        .submit-btn:hover {
+            background-color: #0056b3; /* 鼠标悬停时背景颜色变化 */
+            transform: scale(1.05); /* 悬停时轻微放大 */
+        }
+
+        .submit-btn:focus {
+            outline: none; /* 去掉点击时的轮廓 */
+        }
+
+        @media (max-width: 768px) {
+            .fixed-form-container {
+                left: 10px;
+                width: calc(100% - 20px);
+            }
+
+            .input-group {
+                flex-direction: column; /* 在小屏幕上让输入框和按钮垂直排列 */
+            }
+
+            .input {
+                margin-right: 0;
+                margin-bottom: 10px;
+            }
+        }
+.satisfaction-container {
+    color: #0b0b0b;
+    font-size: 14px;
+    display: flex;
+    align-items: center;
+}
+
+.satisfaction-container span {
+    margin-right: 10px;
+}
+
+.satisfaction-container form {
+    display: flex;
+    align-items: center;
+    margin: 0;
+}
+
+.satisfaction-container label {
+    margin-right: 10px;
+}
+
+.satisfaction-container input[type="radio"] {
+    margin-right: 5px;
+}
+.popup-modal {
+    display: none;
+    position: fixed;
+    top: 50%; /* 距离顶部 50% */
+    left: 50%; /* 距离左侧 50% */
+    transform: translate(-50%, -50%); /* 偏移自身宽高的一半，使其居中 */
+    background-color: white;
+    padding: 20px;
+    box-shadow: 0 0 10px rgba(0, 0, 0, 0.5);
+    z-index: 1000;
+    width: 70vw; /* 宽度为视窗宽度的 70% */
+    height: 80vh; /* 高度为视窗高度的 80% */
+    max-width: 90vw; /* 最大宽度限制为视窗宽度的 90%（防止过宽） */
+    max-height: 90vh; /* 最大高度限制为视窗高度的 90%（防止过高） */
+    overflow-y: auto; /* 内容超出时显示滚动条 */
+}
+
+.close-button {
+    position: sticky;
+    top: 10px;
+    right: 10px;
+    cursor: pointer;
+    z-index: 1001;
+}
+
+.popup-content {
+    margin-top: 10px;
+}
+
+.overlay {
+    display: none;
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background-color: rgba(0, 0, 0, 0.5);
+    z-index: 999;
+}
+    </style>
+</head>
+<body>
+
+<div class="row">
+
+    <div class="col-md-8" style="font-size: 20px">
+        <div class="row">
+
+            <div class="col-md-12 answer-area-container">
+
+                <div id="answerArea" style="height: 80vh; overflow-y: auto; padding: 20px;">
+                    <!-- 初始消息 -->
+                    <p>
+                        <img alt="Bot" src="{% static 'images/bot.png' %}" width="30" height="30">
+                        <br>
+                        <span class="answer">你好，我是你的中医药智能问答助手，很期待和你交流。</span>
+                    </p>
+                </div>
+            </div>
+        </div>
+        <div class="row fixed-form-container">
+            <div class="col-md-9 text-center">
+<!-- 弹窗容器 -->
+<div id="popupModal" class="popup-modal">
+    <span id="closePopup" class="close-button">&times;</span>
+    <div id="popupContent" class="popup-content">
+        <!-- 这里会动态加载内容 -->
+        <p>这里是示例内容。</p>
+        <p>...</p>
+        <p>更多内容...</p>
+    </div>
+</div>
+
+<!-- 遮罩层 -->
+<div id="overlay" style="display: none; position: fixed; top: 0; left: 0; width: 100%; height: 100%; background-color: rgba(0, 0, 0, 0.5); z-index: 999;"></div>
+                <form id="questionForm" >
+                <!-- 单选按钮：是否调用大模型 -->
+                    <div class="radio-group" style="font-size: 14px;margin-bottom: -30px; display: flex; align-items: center;">
+                        <!-- 提示文字 -->
+                        <div style=" color: #555; margin-right: 10px;margin-bottom: 10px">
+                            是否调用大模型：
+                        </div>
+                        <!-- 单选按钮 -->
+                        <label style="margin-right: 10px;">
+                            <input type="radio" name="use_model" value="true" checked> 是
+                        </label>
+                        <label>
+                            <input type="radio" name="use_model" value="false"> 否
+                        </label>
+                    </div>
+                    <div class="radio-group" style="font-size: 14px;margin-bottom: -10px; display: flex; align-items: center;margin-left: 300px">
+                        <!-- 提示文字 -->
+                        <div style=" color: #555; margin-right: 10px;margin-bottom: 10px">
+                            是否开启联网搜索功能：
+                        </div>
+                        <!-- 单选按钮 -->
+                        <label style="margin-right: 10px;">
+                            <input type="radio" name="use_lian_wang" value="true" checked> 是
+                        </label>
+                        <label>
+                            <input type="radio" name="use_lian_wang" value="false" > 否
+                        </label>
+                    </div>
+                    <div class="input-group">
+                        <!-- 用户输入框 -->
+                        <input type="text" id="question" name="question" placeholder="输入问题" required class="input">
+                        <!-- 提交按钮 -->
+                        <button type="submit" class="submit-btn">提交问题</button>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+    <div class="col-md-4">
+    <div>图谱展示区域</div>
+    <a href="/index" class="nav-link" style="margin-left: 500px;margin-top: -30px">返回首页</a>
+    <iframe id="page-viewer" style="width: 95%; height: 92vh; border: 1px solid #ccc; margin-top: 20px;"></iframe>
+</div>
+</div>
+
+
+<script>
+
+$(document).ready(function () {
+    // 获取 session.status 的值（从 Django 模板传递到前端）
+    const sessionStatus = {{ session_status }};
+
+    $('#questionForm').on('submit', function (event) {
+        event.preventDefault();  // 防止表单提交刷新页面
+
+        // 如果未登录，显示提示并跳转到登录页面
+        if (sessionStatus === 0) {
+            alert("请登录再提问");
+            window.location.href = "/login";  // 跳转到登录页面
+            return;
+        }
+
+        const question = $('#question').val();
+        // 获取单选按钮的选择值
+        const useModel = $('input[name="use_model"]:checked').val();
+        const use_lian_wang = $('input[name="use_lian_wang"]:checked').val();
+        // 在回答区域添加新的消息块
+        const uniqueId = `${Date.now()}`; // 为每个回复块生成唯一 ID
+
+        const newMessage = `
+<div class="answer-item">
+    <p>
+        <p style="float: right">
+            <img alt="User" src="{% static 'images/user.png' %}" width="30" height="30">
+        </p>
+        <br>
+        <span class="ask">${question}</span>
+    </p>
+    <br><br>
+    <p>
+        <img alt="Bot" src="{% static 'images/bot.png' %}" width="30" height="30">
+        <br>
+        <span class="answer" id="${uniqueId}"> </span>
+    </p>
+    <div id="form-container-${uniqueId}" style="color: #0b0b0b; font-size: 14px; display: none; justify-content: flex-end; align-items: center; margin-top: -18px; margin-right: 800px;">
+    <!-- 查看图谱表单 -->
+    <form method="post" action="/model_kg/" style="display: inline; margin-right: 20px;" onsubmit="handleSubmit(event)">
+        {% csrf_token %}
+        <input type="hidden" name="id" value="${uniqueId}">
+        <button type="submit" style="background-color: #007bff; color: white; border: none; cursor: pointer; font-size: 14px; height: 26px; display: flex; align-items: center; padding: 0 10px;">
+            查看图谱
+        </button>
+    </form>
+
+    <!-- 查看推荐表单 -->
+    <form method="post" action="/internet_search_view/" style="display: inline;" onsubmit="handleSubmit2(event)">
+        {% csrf_token %}
+        <input type="hidden" name="id" value="${uniqueId}">
+        <button type="submit" style="background-color: #007bff; color: white; border: none; cursor: pointer; font-size: 14px; height: 26px; display: flex; align-items: center; padding: 0 10px;">
+            智能推荐
+        </button>
+    </form>
+
+    <!-- 点赞/点踩表单 -->
+    <form method="post" action="/submitsatisfaction/" id="satisfactionForm-${uniqueId}" style="display: flex; align-items: center; gap: 10px; margin-left: 50px; margin-top: 5px;">
+        {% csrf_token %}
+        <input type="hidden" name="id" value="${uniqueId}">
+
+        <!-- 点赞按钮 -->
+        <label style="cursor: pointer; display: flex; align-items: center;">
+            <input type="radio" name="satis" value="1" required style="display: none;">
+            <i class="fas fa-thumbs-up" style="font-size: 20px; color: #888;"></i> <!-- 初始灰色 -->
+        </label>
+
+        <!-- 点踩按钮 -->
+        <label style="cursor: pointer; display: flex; align-items: center;">
+            <input type="radio" name="satis" value="0" required style="display: none;">
+            <i class="fas fa-thumbs-down" style="font-size: 20px; color: #888;"></i> <!-- 初始灰色 -->
+        </label>
+    </form>
+</div>
+</div>
+
+</div>
+        `;
+        $('#answerArea').append(newMessage);
+
+        // 滚动到底部
+        scrollToBottom();
+        // === 开始加载动画 ===
+        const loadingInterval = showLoading(uniqueId);
+        let hasReceivedData = false;
+        function showLoading(id) {
+            const $el = $(`#${id}`);
+            let dots = 0;
+            const interval = setInterval(() => {
+                dots = (dots + 1) % 4;
+                $el.html(`<span style="color: #888; font-style: italic;">思考中${'.'.repeat(dots)}</span>`);
+            }, 300);
+            return interval;
+        }
+        // 发送 AJAX 请求并处理流式响应
+        fetch('/stream-chat/', {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json',
+                'X-CSRFToken': '{{ csrf_token }}'
+            },
+            body: JSON.stringify({
+                question: question,
+                id: uniqueId,
+                use_lian_wang:use_lian_wang,
+                use_model: useModel // 将单选按钮的值传递给后端
+            })
+        })
+        .then(response => {
+            const reader = response.body.getReader();
+            const decoder = new TextDecoder('utf-8');
+            let fullResponse = '';
+
+            function readStream() {
+                reader.read().then(({ done, value }) => {
+                    if (done) {
+                         if (hasReceivedData) {
+                            // 已经在显示真实内容，无需操作
+                         } else {
+                            // 极端情况：没有收到任何数据就结束了
+                            clearInterval(loadingInterval);
+                            $(`#${uniqueId}`).text('暂无回答。');
+                         }
+                        // 流结束时更新完整内容
+                        const renderedHTML = marked.parse(fullResponse); // 使用 marked.js 渲染 Markdown
+                        $(`#${uniqueId}`).html(renderedHTML); // 插入渲染后的 HTML
+                        scrollToBottom(); // 流式结束时再次滚动到底部
+
+                    const formContainer = document.getElementById(`form-container-${uniqueId}`);
+                    formContainer.style.display = 'flex'; // 显示表单容器
+                        // 绑定满意度单选框的自动提交事件
+                        bindSatisfactionSubmit(`#satisfactionForm-${uniqueId}`);
+                        return;
+                    }
+                    const chunk = decoder.decode(value, { stream: true });
+                    fullResponse += chunk;
+                    // 第一次收到数据时：停止加载动画，切换为真实内容
+                    if (!hasReceivedData) {
+                        hasReceivedData = true;
+                        clearInterval(loadingInterval); // ✅ 停止加载动画
+                    }
+                    // 实时更新内容并渲染 Markdown
+                    const renderedChunk = marked.parse(fullResponse); // 使用 marked.js 渲染 Markdown
+                    $(`#${uniqueId}`).html(renderedChunk);
+
+                    // 实时滚动到底部
+                    scrollToBottom();
+
+                    readStream(); // 继续读取下一个数据块
+                });
+            }
+
+            readStream();
+
+        })
+        .catch(error => {
+             clearInterval(loadingInterval); // ✅ 清除动画
+            $(`#${uniqueId}`).text('发生错误，请稍后再试。');
+            scrollToBottom(); // 错误时也滚动到底部
+        });
+
+        // 清空输入框
+        $('#question').val('');
+    });
+
+    // 滚动到底部的函数
+    function scrollToBottom() {
+        const answerArea = $('#answerArea')[0];
+        answerArea.scrollTop = answerArea.scrollHeight;
+    }
+
+    // 绑定满意度单选框的自动提交事件
+// 绑定满意度单选框的自动提交事件（通过 AJAX 提交）
+function bindSatisfactionSubmit(formSelector) {
+    const form = $(formSelector)[0];
+    const radioButtons = form.querySelectorAll('input[type="radio"]');
+    const icons = form.querySelectorAll('i');
+
+    // 初始化所有图标为灰色
+    icons.forEach(icon => {
+        icon.style.color = '#888';
+    });
+
+    radioButtons.forEach(radio => {
+        const label = radio.parentElement;
+        const icon = label.querySelector('i');
+
+        radio.addEventListener('change', function () {
+            // 阻止默认的表单提交行为
+            event.preventDefault();
+
+            // 重置所有图标为灰色
+            icons.forEach(icon => {
+                icon.style.color = '#888';
+            });
+
+            // 根据选中的值改变颜色
+            if (radio.value === '1') {
+                icon.style.color = '#28a745'; // 点赞成功变绿色
+            } else {
+                icon.style.color = '#dc3545'; // 点踩成功变红色
+            }
+
+            // 获取表单数据
+            const formData = new FormData(form);
+
+            // 使用 AJAX 提交数据
+            fetch('/submitsatisfaction/', {
+                method: 'POST',
+                headers: {
+                    'X-CSRFToken': '{{ csrf_token }}'
+                },
+                body: new URLSearchParams(formData)
+            })
+            .then(response => {
+                if (response.ok) {
+                    console.log('满意度已提交');
+                } else {
+                    console.error('提交失败');
+                }
+            })
+            .catch(error => {
+                console.error('提交出错:', error);
+            });
+        });
+    });
+}
+});
+function handleSubmit(event) {
+        // 阻止表单的默认提交行为
+        event.preventDefault();
+
+        // 获取表单的 action 属性值（目标 URL）
+        const form = event.target;
+        const actionUrl = form.action;
+
+        // 构造 FormData 对象，包含 CSRF Token 和其他表单数据
+        const formData = new FormData(form);
+
+        // 使用 Fetch API 发送 POST 请求
+        fetch(actionUrl, {
+            method: 'POST',
+            body: formData,
+            headers: {
+                'X-CSRFToken': formData.get('csrfmiddlewaretoken') // 确保传递 CSRF Token
+            }
+        })
+        .then(response => response.text()) // 获取响应内容
+        .then(html => {
+            // 将响应内容插入到 iframe 中
+            const iframe = document.getElementById('page-viewer');
+            const iframeDoc = iframe.contentDocument || iframe.contentWindow.document;
+            iframeDoc.open();
+            iframeDoc.write(html);
+            iframeDoc.close();
+        })
+        .catch(error => {
+            console.error('Error:', error);
+        });
+    }
+
+    function handleSubmit2(event) {
+        event.preventDefault(); // 阻止表单默认提交行为
+
+        const form = event.target;
+        const formData = new FormData(form);
+
+        // 发送 AJAX 请求
+        fetch(form.action, {
+            method: 'POST',
+            body: formData,
+            headers: {
+                'X-CSRFToken': formData.get('csrfmiddlewaretoken') // 确保 CSRF Token 被正确发送
+            }
+        })
+        .then(response => response.text()) // 获取响应内容
+        .then(data => {
+            // 显示弹窗并加载内容
+            document.getElementById('popupContent').innerHTML = data;
+            document.getElementById('popupModal').style.display = 'block';
+            document.getElementById('overlay').style.display = 'block';
+        })
+        .catch(error => {
+            console.error('Error:', error);
+        });
+    }
+
+    // 关闭弹窗
+    document.getElementById('closePopup').addEventListener('click', () => {
+        document.getElementById('popupModal').style.display = 'none';
+        document.getElementById('overlay').style.display = 'none';
+    });
+
+    // 点击遮罩层关闭弹窗
+    document.getElementById('overlay').addEventListener('click', () => {
+        document.getElementById('popupModal').style.display = 'none';
+        document.getElementById('overlay').style.display = 'none';
+    });
+</script>
+</body>
+</html>

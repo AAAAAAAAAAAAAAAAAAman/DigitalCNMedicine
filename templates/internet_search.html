@@ -1,0 +1,87 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>相关信息预览</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            margin: 20px;
+            background-color: #f9f9f9;
+        }
+        h1 {
+            text-align: center;
+            color: #333;
+        }
+        .grid-container {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 20px; /* 每个预览区域之间的间距 */
+            justify-content: center; /* 居中对齐 */
+        }
+        .url-preview {
+            position: relative;
+            width: calc(33% - 40px); /* 每行显示 3 个，减去间距 */
+            border: 1px solid #ddd;
+            padding: 15px;
+            border-radius: 8px;
+            box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+            background-color: #fff;
+            overflow: hidden;
+        }
+        .url-preview iframe {
+            width: 100%;
+            height: 300px; /* 设置嵌入页面的高度 */
+            border: none;
+        }
+        .url-overlay {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(255, 255, 255, 0.8); /* 半透明背景 */
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            opacity: 0; /* 默认隐藏覆盖层 */
+            transition: opacity 0.3s ease;
+            cursor: pointer;
+        }
+        .url-preview:hover .url-overlay {
+            opacity: 1; /* 鼠标悬停时显示覆盖层 */
+        }
+        .url-overlay-text {
+            font-size: 16px;
+            font-weight: bold;
+            color: #333;
+            text-align: center;
+        }
+        @media (max-width: 1200px) {
+            .url-preview {
+                width: calc(50% - 40px); /* 在较小屏幕上每行显示 2 个 */
+            }
+        }
+        @media (max-width: 768px) {
+            .url-preview {
+                width: 100%; /* 在更小屏幕上每行显示 1 个 */
+            }
+        }
+    </style>
+</head>
+<body>
+    <h1>为您推荐以下内容</h1>
+
+    <div class="grid-container">
+        {% for item in urls %}
+        <div class="url-preview">
+            <iframe src="{{ item.url }}"></iframe>
+            <a href="{{ item.url }}" target="_blank" class="url-overlay">
+                <div class="url-overlay-text">点击查看完整页面</div>
+            </a>
+        </div>
+        {% endfor %}
+    </div>
+</body>
+</html>

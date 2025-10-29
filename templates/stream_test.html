@@ -1,0 +1,52 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Stream Chat</title>
+</head>
+<body>
+<h1>Ask a Question</h1>
+<form id="question-form">
+    <input type="text" id="question-input" placeholder="Enter your question here..." required>
+    <button type="submit">Submit</button>
+</form>
+
+<div id="response-area">
+    <p>Response will appear here...</p>
+</div>
+
+<script>
+document.getElementById('question-form').addEventListener('submit', function (event) {
+    event.preventDefault(); // 防止默认提交行为
+
+    const question = document.getElementById('question-input').value;
+
+    fetch('/api_stream_test/', {
+        method: 'POST',
+        headers: {
+            'Content-Type': 'application/json',
+            'X-CSRFToken': '{{ csrf_token }}'  // 如果你没有禁用CSRF保护，请确保包含此行
+        },
+        body: JSON.stringify({question: question})
+    })
+    .then(response => {
+        if (!response.ok) throw new Error("Network response was not ok");
+        const reader = response.body.getReader();
+        const decoder = new TextDecoder('utf-8');
+
+        function read() {
+            reader.read().then(({done, value}) => {
+                if (done) return;
+                const chunk = decoder.decode(value, {stream: true});
+                document.getElementById('response-area').innerHTML += `<p>${chunk}</p>`;
+                read(); // 继续读取下一个块
+            }).catch(error => console.error('Error while reading stream:', error));
+        }
+
+        read();
+    })
+    .catch(error => console.error('There has been a problem with the fetch operation:', error));
+});
+</script>
+</body>
+</html>

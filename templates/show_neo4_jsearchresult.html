@@ -1,0 +1,326 @@
+<!doctype html>
+{% load static %}
+<html lang="en">
+
+<head>
+    <title>数智中医-图谱检索</title>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+
+    <link rel="stylesheet" href="/static/fonts/icomoon/style.css">
+
+    <link rel="stylesheet" href="/static/css/bootstrap.min.css">
+    <link rel="stylesheet" href="/static/css/jquery.fancybox.min.css">
+    <link rel="stylesheet" href="/static/css/owl.carousel.min.css">
+    <link rel="stylesheet" href="/static/css/owl.theme.default.min.css">
+    <link rel="stylesheet" href="/static/fonts/flaticon/font/flaticon.css">
+    <link rel="stylesheet" href="/static/css/aos.css">
+
+    <!-- MAIN CSS -->
+    <link rel="stylesheet" href="/static/css/style.css">
+    <script type="text/javascript" src="{% static 'js/jquery-3.5.1.min.js' %}"></script>
+    <script type="text/javascript" src="{% static 'js/echarts.min.js' %}"></script>
+
+    {#    图谱core js#}
+
+</head>
+
+<body data-spy="scroll" data-target=".site-navbar-target" data-offset="300">
+
+
+<div class="site-wrap" id="home-section">
+
+    <div class="site-mobile-menu site-navbar-target">
+        <div class="site-mobile-menu-header">
+            <div class="site-mobile-menu-close mt-3">
+                <span class="icon-close2 js-menu-toggle"></span>
+            </div>
+        </div>
+        <div class="site-mobile-menu-body"></div>
+    </div>
+
+
+    <header class="site-navbar js-sticky-header site-navbar-target" role="banner">
+
+        <div class="container">
+            <div class="row align-items-center position-relative">
+
+
+                <div class="site-logo">
+                    <a href="/index" class="text-black"><span class="text-primary">数智中医</span></a>
+                </div>
+
+                <div class="col-12">
+                    <nav class="site-navigation text-right ml-auto " role="navigation">
+
+                        {#                        导航栏右侧#}
+                        <ul class="site-menu main-menu js-clone-nav ml-auto d-none d-lg-block">
+                            {% if session.status == 0 %}
+                                <li><a href="/login" class="nav-link">注册/登录</a></li>
+                            {% endif %}
+                            {% if session.status == 1 %}
+                                <li><a class="nav-link">欢迎！{{ session.username }}</a></li>
+                                <li><a href="/logout" class="nav-link">退出登录</a></li>
+
+                            {% endif %}
+                            <li><a href="/index" class="nav-link">返回首页</a></li>
+
+                        </ul>
+                    </nav>
+
+                </div>
+
+                <div class="toggle-button d-inline-block d-lg-none"><a href="#"
+                                                                       class="site-menu-toggle py-5 js-menu-toggle text-black"><span
+                        class="icon-menu h3"></span></a></div>
+
+            </div>
+        </div>
+
+    </header>
+
+    <div class="site-section-cover overlay inner-page bg-light"
+         style="background-image: url('/static/images/medicine3.jpg')" data-aos="fade">
+
+        <div class="container">
+            <div class="row align-items-center justify-content-center text-center">
+                <div class="col-lg-10">
+
+                    <div class="box-shadow-content">
+                        <div class="block-heading-1">
+                            <span class="d-block mb-3 text-white"
+                                  data-aos="fade-up">除了你在百度能看到的文本知识，我们还有形象的知识图谱！</span>
+                            <h1 class="mb-4" data-aos="fade-up" data-aos-delay="100">图谱检索</h1>
+                        </div>
+
+
+                    </div>
+                </div>
+            </div>
+        </div>
+
+    </div>
+
+
+    <div class="site-section">
+        <div class="container">
+            <div class="row">
+                <div class="col-md-9 blog-content">
+
+                    <div align="center"><h1>{{ question }}<br>&nbsp;</h1></div>
+                    {% if neonum != 0 %}
+                        <div id="chart-container" style="width:1500px;height:800px" class="col-12"></div>
+                    {% else %}
+                        <p style="font-size: 18px;color: #78261f">知识图谱中没有查询到相关数据</p>
+                    {% endif %}
+                </div>
+
+                <div class="col-md-3 sidebar">
+
+                    <div class="sidebar-box">
+                        <div class="categories">
+                            <h3>功能跳转</h3>
+                            <li><a href="/index">→图谱检索</a></li>
+                            <li><a href="/medicine_ai/">→智能问答</a></li>
+                            <li><a href="/passageindex">→健康百科</a></li>
+                        </div>
+                    </div>
+
+                </div>
+            </div>
+        </div>
+    </div>
+
+
+    {#底部黑块#}
+    <footer class="site-footer">
+        <div class="container">
+            <div class="row">
+                <div class="col-md-6">
+                    <div class="row">
+                        <div class="col-md-7">
+                            <h2 class="footer-heading mb-4">关于我们</h2>
+                            <p>
+                                我们是来自浙江中医药大学的开发团队！希望我们的“数智中医”可以给您带来帮助。如有需要，可以通过上边的“联系我们”或者直接向qjh9641@163.com给我们发送邮件哦！
+                            </p>
+                        </div>
+
+                    </div>
+                </div>
+                <div class="col-md-4 ml-auto">
+
+                    <form action="#" method="post" class="footer-suscribe-form">
+                        <div class="mb-5">
+                            <h2 class="footer-heading mb-4">订阅我们的更新！</h2>
+
+                            <div class="input-group mb-3">
+                                <input type="text" class="form-control border-secondary text-white bg-transparent"
+                                       placeholder="输入电子邮箱..." aria-label="Enter Email"
+                                       aria-describedby="button-addon2">
+                                <div class="input-group-append">
+                                    <button class="btn btn-primary text-white" type="button" id="button-addon2">
+                                        订阅
+                                    </button>
+                                </div>
+                            </div>
+                        </div>
+                    </form>
+                </div>
+            </div>
+            <div class="row pt-5 mt-5 text-center">
+                <div class="col-md-12">
+                    <div class="border-top pt-5">
+                        <p>
+                            <!-- Link back to cssmoban can't be removed. Template is licensed under CC BY 3.0. -->
+                            Copyright &copy; 2025/3/29 ZCMU
+                        </p>
+                    </div>
+                </div>
+
+            </div>
+        </div>
+    </footer>
+
+</div>
+
+<script src="/static/js/jquery-3.3.1.min.js"></script>
+<script src="/static/js/popper.min.js"></script>
+<script src="/static/js/bootstrap.min.js"></script>
+<script src="/static/js/owl.carousel.min.js"></script>
+<script src="/static/js/jquery.sticky.js"></script>
+<script src="/static/js/jquery.waypoints.min.js"></script>
+<script src="/static/js/jquery.animateNumber.min.js"></script>
+<script src="/static/js/jquery.fancybox.min.js"></script>
+<script src="/static/js/jquery.easing.1.3.js"></script>
+<script src="/static/js/aos.js"></script>
+
+<script src="/static/js/main.js"></script>
+
+<script>
+    var myChart1 = echarts.init(document.getElementById('chart-container'));
+
+    var categories = [{name: "节点"}];
+
+    option1 = {
+        // 图的标题
+        title: {
+            text: '中医知识图谱查询结果展示'
+        },
+        // 提示框的配置
+        tooltip: {
+            formatter: function (x) {
+                return x.data.des;
+            }
+        },
+        // 工具箱
+        toolbox: {
+            // 显示工具箱
+            show: true,
+            feature: {
+                mark: {
+                    show: true
+                },
+                // 还原
+                restore: {
+                    show: true
+                },
+                // 保存为图片
+                saveAsImage: {
+                    show: true
+                }
+            }
+        },
+        legend: [{
+            // selectedMode: 'single',
+            //设置可以根据类别显示or隐藏节点
+            data: categories.map(function (a) {
+                return a.name;
+            })
+        }],
+        series: [{
+            type: 'graph', // 类型:关系图
+            layout: 'force', // 图的布局，类型为力导图
+            symbolSize: 15, // 调整节点的大小
+            roam: true, // 是否开启鼠标缩放和平移漫游
+            edgeSymbol: ['circle', 'arrow'],
+            edgeSymbolSize: [2, 10],
+            edgeLabel: {
+                normal: {
+                    show: true,
+                    formatter: function (x) {
+                        return x.data.name;
+                    },
+                    textStyle: {
+                        fontSize: 10
+                    }
+                }
+            },
+            force: { // 力引导图基本配置
+                repulsion: 2000, // 节点之间的斥力因子
+                gravity: 0.03, // 节点受到的向中心的引力因子
+                edgeLength: [10, 50], // 边的两个节点之间的距离
+                layoutAnimation: true, // 是否显示布局的迭代动画
+                friction: 0.1 // 摩擦系数，控制节点运动速度衰减
+            },
+            draggable: true,
+            lineStyle: {
+                normal: {
+                    width: 2,
+                    color: '#4b565b',
+                }
+            },
+            label: {
+                normal: {
+                    show: true,
+                    textStyle: {}
+                }
+            },
+
+            data: [
+                {% for item in kg_data.0 %}
+                    {
+                        name: '{{ item.name }}',
+                        des: {{ item.des }},
+                        symbolSize: {{ item.symbolSize }},
+
+                        url: "{{ item.url }}",
+                        itemStyle: {
+                            color: ['#c990c0', '#da7194', '#4c8eda', '#57c7e3', '#569480', '#ffc454'][{{ item.category }}]
+                        }
+                    },
+                {% endfor %}
+            ],
+            links: [
+                {% for temp in kg_data.1 %}
+                    {
+                        source: '{{ temp.source }}',
+                        target: '{{ temp.target }}',
+                        name: '{{ temp.name }}',
+                        des: ''
+                    },
+                {% endfor %}
+            ] // 定义关系
+        }]
+    }
+
+    myChart1.setOption(option1);
+    myChart1.on('click', function (params) {
+        var clickedDataUrl = params.data.url;
+        console.log('被点击了')
+        $.ajax({
+            url: clickedDataUrl,  // 使用被点击数据点的 URL
+            type: 'GET',
+            success: function (response) {
+                var iframeElement = document.getElementById('page-viewer');
+                iframeElement.src = clickedDataUrl; // 设置 iframe 的 src 属性为目标 URL
+            },
+            error: function (xhr, status, error) {
+                console.log('请求失败: ' + error);
+            }
+        });
+    });
+
+</script>
+</body>
+
+</html>
