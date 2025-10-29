@@ -1,6 +1,6 @@
 
 # DigitalCNMedicine
-一个基于Django,Neo4j,LLM和图谱问答技术的的中医药知识图谱与智能问答平台。
+一个基于知识图谱和大语言模型的的中医药智能问答平台，使用django、neo4j、html等工具实现。
 ![image](static/images/readme/GIF.gif)
 # 项目来源与背景
 首先感谢[ChessZH](https://github.com/ZhChessOvO)大佬，这个项目是在ta的[ZeLanChao_KGQA](https://github.com/ZhChessOvO/ZeLanChao_KGQA)基础上改进而来,  
